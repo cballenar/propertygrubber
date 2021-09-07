@@ -37,7 +37,11 @@
 
 ```
 - Pulled full department data
+
 The site's search data can be retrieved via the browser console. this variable contains ALL the results under the current criteria, the criteria seems to be specific to the URL which appears to be IDd in the backend as well. Each property also goes through this so even if you have the real property slug, you can't get to it without a prefix.
+
+Use this as a the resource to feed the script for now
+
 ```
 console.log(JSON.stringify(search_data))
 ```
