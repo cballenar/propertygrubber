@@ -1,0 +1,17 @@
+{
+  "name": "propertygrubber",
+  "version": "1.0.0",
+  "description": "real estate website crawler",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cballenar",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chowdown": "^1.2.5",
+    "json2csv": "^5.0.6",
+    "node-html-parser": "^4.1.4"
+  }
+}
