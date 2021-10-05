@@ -1,5 +1,47 @@
 # Log
 
+## 2021-10-05
+- Figured out the issue... the timeout was running just fine but because these are async functions pretty much they all waited and then executed at the same time making the timeout pretty much pointless... so it looks like we gotta do an actual loop as suggested at one point but i didn't understand the need for it then.
+- Still need to fully understand the importance of `new` when making a promise.
+- The simplified version below is the sample I used to test the basics, it returns the data in about 1-2secs.
+
+```
+const htmlparser = require('node-html-parser');
+const axios = require('axios').default;
+const fs = require('fs');
+
+let file_name = 'sample.json',
+    rawdata = fs.readFileSync('resources/'+file_name),
+    projects = JSON.parse(rawdata);
+
+var mapped_projects = projects.map((project)=>{
+    return new Promise((resolve) => {
+            setTimeout(resolve, 1000, project);
+        }).then((project)=> {
+            return project['slug']
+        });
+});
+Promise.all(mapped_projects).then((projects)=>{
+    console.log(projects);
+});
+```
+
+## 2021-10-03
+- Having a hard time understanding Promises and how to work with them.
+- Can `array.map` be used with `Promise`s inside? It's not working so far... 
+- Seems like the site raised its security, now we're getting 502 errors after looping through requests
+
+
+
+## 2021-09-07
+After a long struggle...
+- Moved from python to js (node) mostly for the novelty of firebase though i gotta admit some things were easier
+- Ended up:
+    - running script locally,
+    - capturing json to file,
+    - transforming with an online tool
+    - uploading to Zoho Analytics (https://analytics.zoho.com/open-view/2388007000000019163)
+
 ## 2021-08-29
 
 - Initialize
@@ -45,13 +87,3 @@ Use this as a the resource to feed the script for now
 ```
 console.log(JSON.stringify(search_data))
 ```
-
---
-## 2021-09-07
-After a long struggle...
-- Moved from python to js (node) mostly for the novelty of firebase though i gotta admit some things were easier
-- Ended up:
-    - running script locally,
-    - capturing json to file,
-    - transforming with an online tool
-    - uploading to Zoho Analytics (https://analytics.zoho.com/open-view/2388007000000019163)
