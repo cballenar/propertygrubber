@@ -1,5 +1,8 @@
 # Log
 
+## 2021-10-31
+Was finally able to do the sequential capture of pages and the parse completed without issues.
+
 ## 2021-10-05
 - Figured out the issue... the timeout was running just fine but because these are async functions pretty much they all waited and then executed at the same time making the timeout pretty much pointless... so it looks like we gotta do an actual loop as suggested at one point but i didn't understand the need for it then.
 - Still need to fully understand the importance of `new` when making a promise.
