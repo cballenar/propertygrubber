@@ -12,32 +12,46 @@ const json2csv = require('json2csv');
  * @param {Number} delay Time in milliseconds to delay each item
  * @returns {Array} New list of processed items
  */
- function pacer(projects, name=Date.now().toString(), delay=1000) {
+ function pacer(projects, key=Date.now().toString(), delay=1000) {
     const
         domain = 'https://nexoinmobiliario.pe',
         slug_prefix = '/proyecto/venta-de-departamento-';
     const startTime = Date.now();
     const new_projects = [];
+    const name = 'processed-'+key+'.json';
 
     function processProperty(project, response) {
+        // start with a clean project
+        const new_project = {};
+        new_project.snapshot_date = key;
+
+        // add only required keys in the order needed (for use in Google Sheets)
+        let sorted_keys = ["url","project_id","project_contact","project_email","project_phone","project_cell_phone","project_whatsapp","name","type_project","project_phase","distrito","direccion","provincia_project","dpto_project","slug","coin","builder_name","builder_slug","socio_asei","coord_lat","long","finance_bank","services"];
+        sorted_keys.forEach(el=>{ new_project[el] = project[el]; })
+
+        // let's do a bit of cleanup of the project data
+        // let junk_keys = ["image","tour_virtual","visibility_in_feria_nexo","min_price","val_price1","val_price2","room_min","room_max","area_min","area_max","bathroom_min","bathroom_max","parking_min","parking_max","cantidad","logo_empresa","visibility_semananexo","cintillo_principal","important_level","is_featured","url_video","gallery","keyword","gallery_xm","gallery_big"];
+        // junk_keys.forEach(el => {delete project[el];} )
+
         // remove `<!doctype html>\n` as htmlparser seens to have no idea what to do with that :\
         const html = response.data.substring(16);
         const root = htmlparser.parse( html );
     
         // get properties
         const propertiesHTMLElements = root.querySelectorAll('.projectListProperty');
-    
+
         // extract summary from properties as new array in project.properties
-        project.properties = propertiesHTMLElements.map((property)=>{
+        new_project.properties = propertiesHTMLElements.map((property)=>{
             let property_summary = {};
-            property_summary.type   = property.parentNode.id;
             property_summary.id     = property.querySelector('.button a').attributes['data-id'];
             property_summary.name   = property.querySelector('.button a').attributes['data-name'];
+            property_summary.type   = property.parentNode.id;
             property_summary.price  = property.querySelector('.price b').textContent;
             property_summary.area   = property.querySelector('.meters').textContent;
-            if (property.querySelector('.projectListProperty__img .popup-link')) {
-                property_summary.image  = property.querySelector('.projectListProperty__img .popup-link').attributes['data-links'];
-            }
+            // this is also junk
+            // if (property.querySelector('.projectListProperty__img .popup-link')) {
+            //     property_summary.image  = property.querySelector('.projectListProperty__img .popup-link').attributes['data-links'];
+            // }
             if (property.querySelector('.bedroom')) {
                 property_summary.rooms  = property.querySelector('.bedroom').textContent;
             }
@@ -46,7 +60,7 @@ const json2csv = require('json2csv');
             }
             return property_summary;
         });
-        return project;
+        return new_project;
     }
 
     function paceList(i=0) {
@@ -89,19 +103,13 @@ const json2csv = require('json2csv');
 /*
  * Test Data
  */
-let file_name = 'venta-de-departamentos-o-oficinas-o-lotes-o-casas-en-lima-15-20211101.json',
+let file_name = 'venta-de-departamentos-o-oficinas-o-lotes-o-casas-en-lima-15-20220101.json',
     rawdata = fs.readFileSync('resources/'+file_name),
     projects = JSON.parse(rawdata);
 
 // sample data
 sample = projects.slice(0,10);
-let sample_projects = pacer(sample, 'processed-sample-20211101.json', 1500);
-
-sample_2 = projects.slice(10,20);
-let sample_projects_2 = pacer(sample_2, 'processed-sample-20211101-2.json', 1500);
-
-sample_3 = projects.slice(20,30);
-let sample_projects_3 = pacer(sample_3, 'processed-sample-20211101-3.json', 1500);
+let sample_projects = pacer(sample, '2022-01-01', 1500);
 
 // all data
-let processed_projects = pacer(projects, 'processed-'+file_name, 1500);
+let processed_projects = pacer(projects, '2022-01-01', 1500);
