@@ -1,5 +1,15 @@
 # Log
 
+## 2022-01-30
+Modified so the script could be called via commands:
+`node index.js [batchID: in date format: YYYY-MM-DD] [source file path] [number of records to process]`
+
+Fetch all records:
+`node index.js 2022-02-01 ./source-file.json`
+
+Fetch a sample:
+`node index.js 2022-02-01 ./source-file.json 10`
+
 ## 2021-10-31
 Was finally able to do the sequential capture of pages and the parse completed without issues.
 

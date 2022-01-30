@@ -4,6 +4,17 @@ const fs = require('fs');
 const json2csv = require('json2csv');
 
 /**
+ * Get arguments
+ * 1st Batch ID
+ * 2nd Source File
+ * 3rd Number of items to process/leave empty for all
+ *
+ */ 
+batchId = process.argv[2]
+batchSource = process.argv[3]
+batchSize = process.argv[4]
+
+/**
  * Pacer
  * Iterates over a list, processes each item and returns the processed value
  * in a new array.
@@ -26,11 +37,11 @@ const json2csv = require('json2csv');
         new_project.snapshot_date = key;
 
         // add only required keys in the order needed (for use in Google Sheets)
-        let sorted_keys = ["url","project_id","project_contact","project_email","project_phone","project_cell_phone","project_whatsapp","name","type_project","project_phase","distrito","direccion","provincia_project","dpto_project","slug","coin","builder_name","builder_slug","socio_asei","coord_lat","long","finance_bank","services"];
+        let sorted_keys = ["url","project_id","project_contact","project_email","project_phone","project_cell_phone","project_whatsapp","name","type_project","project_phase","distrito","direccion","provincia_project","dpto_project","slug","coin","builder_name","builder_slug","socio_asei","coord_lat","long","finance_bank"];
         sorted_keys.forEach(el=>{ new_project[el] = project[el]; })
 
         // let's do a bit of cleanup of the project data
-        // let junk_keys = ["image","tour_virtual","visibility_in_feria_nexo","min_price","val_price1","val_price2","room_min","room_max","area_min","area_max","bathroom_min","bathroom_max","parking_min","parking_max","cantidad","logo_empresa","visibility_semananexo","cintillo_principal","important_level","is_featured","url_video","gallery","keyword","gallery_xm","gallery_big"];
+        // let junk_keys = ["image","tour_virtual","visibility_in_feria_nexo","min_price","val_price1","val_price2","room_min","room_max","area_min","area_max","bathroom_min","bathroom_max","parking_min","parking_max","cantidad","logo_empresa","visibility_semananexo","cintillo_principal","important_level","is_featured","url_video","gallery","keyword","gallery_xm","gallery_big","services"];
         // junk_keys.forEach(el => {delete project[el];} )
 
         // remove `<!doctype html>\n` as htmlparser seens to have no idea what to do with that :\
@@ -103,13 +114,15 @@ const json2csv = require('json2csv');
 /*
  * Test Data
  */
-let file_name = 'venta-de-departamentos-o-oficinas-o-lotes-o-casas-en-lima-15-20220101.json',
-    rawdata = fs.readFileSync('resources/'+file_name),
+let rawdata = fs.readFileSync(batchSource),
     projects = JSON.parse(rawdata);
 
-// sample data
-sample = projects.slice(0,10);
-let sample_projects = pacer(sample, '2022-01-01', 1500);
+if (batchSize != undefined) {
+    // sample data
+    sample = projects.slice(0,batchSize);
+    let sample_projects = pacer(sample, batchId, 1500);
+} else {
+    // all data
+    let processed_projects = pacer(projects, batchId, 1500);
+}
 
-// all data
-let processed_projects = pacer(projects, '2022-01-01', 1500);
