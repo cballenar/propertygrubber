@@ -37,11 +37,11 @@ batchSize = process.argv[4]
         new_project.snapshot_date = key;
 
         // add only required keys in the order needed (for use in Google Sheets)
-        let sorted_keys = ["url","project_id","project_contact","project_email","project_phone","project_cell_phone","project_whatsapp","name","type_project","project_phase","distrito","direccion","provincia_project","dpto_project","slug","coin","builder_name","builder_slug","socio_asei","coord_lat","long","finance_bank"];
+        let sorted_keys = ["url","project_id","project_contact","project_email","project_phone","project_cell_phone","project_whatsapp","name","type_project","project_phase","distrito","direccion","provincia_project","dpto_project","slug","coin","builder_name","builder_slug","socio_asei","coord_lat","long","finance_bank","visibility_in_feria_nexo"];
         sorted_keys.forEach(el=>{ new_project[el] = project[el]; })
 
         // let's do a bit of cleanup of the project data
-        // let junk_keys = ["image","tour_virtual","visibility_in_feria_nexo","min_price","val_price1","val_price2","room_min","room_max","area_min","area_max","bathroom_min","bathroom_max","parking_min","parking_max","cantidad","logo_empresa","visibility_semananexo","cintillo_principal","important_level","is_featured","url_video","gallery","keyword","gallery_xm","gallery_big","services"];
+        // let junk_keys = ["image","tour_virtual","min_price","val_price1","val_price2","room_min","room_max","area_min","area_max","bathroom_min","bathroom_max","parking_min","parking_max","cantidad","logo_empresa","visibility_semananexo","cintillo_principal","important_level","is_featured","url_video","gallery","keyword","gallery_xm","gallery_big","services"];
         // junk_keys.forEach(el => {delete project[el];} )
 
         // remove `<!doctype html>\n` as htmlparser seens to have no idea what to do with that :\
